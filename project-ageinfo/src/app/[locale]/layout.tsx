@@ -7,6 +7,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import { Toaster } from '@/components/ui';
 
 const inter = Inter({
     variable: '--font-inter',
@@ -51,6 +52,7 @@ export default async function RootLayout({
                             <main className="flex-1">{children}</main>
                             <Footer />
                         </div>
+                        <Toaster />
                     </ThemeProvider>
                 </NextIntlClientProvider>
             </body>
