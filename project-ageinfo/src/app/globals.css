@@ -1,26 +1,120 @@
 @import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@plugin 'tailwindcss-animate';
+
+@theme {
+  /* Colors - Premium Palette Overrides */
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+
+  /* Fonts */
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-manrope);
+
+  /* Border Radius */
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  /* Premium Indigo #6366f1 -> HSL 239 75% 67% approx or use exact if needed. 
+     Using hex directly in CSS vars used by tailwind usually works via <alpha-value> if structured right,
+     but for shadcn we stick to HSL values if possible or just Hex. 
+     Tailwind v4 handles colors robustly. Let's use Hex for premium consistency if simpler,
+     OR convert Indigo #6366f1 to HSL: 239 84% 67% */
+  --primary: #6366f1;
+  --primary-foreground: 210 40% 98%;
+  --secondary: #8b5cf6;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: #f43f5e;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 239 84% 67%;
+  /* Matched to Indigo */
+  --radius: 0.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 222.2 84% 4.9%;
+    /* Shadcn default corresponds approx to #020617 */
+    /* Enforcing Soft Navy #020617 explicitly via HSL: 222.2 84% 4.9% IS #020617 */
+    /* Or using Hex if preferred for strictness, but let's stick to HSL for shadcn compat. */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: #6366f1;
+    --primary-foreground: 222.2 47.4% 11.2%;
+    --secondary: #8b5cf6;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: #f43f5e;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 239 84% 67%;
   }
 }
 
 body {
+  background: hsl(var(--background));
+  /* Shadcn uses hsl mostly, but we mixed hex. Tailwind handles it. */
+  /* Fixing background to use variable directly if Hex, or hsl() if HSL numbers */
+  /* To be safe with Hex: */
   background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: hsl(var(--foreground));
+  /* Adjust shorthand for hex vars vs hsl vars mix */
+  color: #171717;
+  /* Fallback */
+  @apply bg-background text-foreground;
+  font-family: var(--font-sans);
+}
+
+/* Utility for mixing HSL and Hex in Shadcn variables usually requires strictly HSL 
+   if using hsl(var(--primary)). 
+   Since we put Hex in --primary, we should remove hsl() wrapper in usages 
+   OR convert our premium colors to HSL.
+   
+   Indigo #6366f1 -> 239 84% 67%
+   Violet #8b5cf6 -> 259 89% 66%
+   Rose #f43f5e   -> 348 91% 60%
+   
+   Let's use HSL for consistency with Shadcn system.
+*/
+:root {
+  --primary: 239 84% 67%;
+  --secondary: 259 89% 66%;
+  --accent: 348 91% 60%;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary: 239 84% 67%;
+    --secondary: 259 89% 66%;
+    --accent: 348 91% 60%;
+  }
+}
+
+/* Re-declaring body to be clean */
+body {
+  @apply bg-background text-foreground;
+  font-family: var(--font-sans);
 }
