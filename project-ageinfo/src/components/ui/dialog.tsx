@@ -3,6 +3,7 @@
 import * as React from "react"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { X } from "lucide-react"
+import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
@@ -19,39 +20,70 @@ const DialogOverlay = React.forwardRef<
     React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => (
     <DialogPrimitive.Overlay
-        ref={ref}
-        className={cn(
-            "fixed inset-0 z-50 bg-black/80 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-            className
-        )}
-        {...props}
-    />
+        asChild
+    >
+        <motion.div
+            ref={ref as any}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className={cn(
+                "fixed inset-0 z-50 bg-black/40 backdrop-blur-sm",
+                className
+            )}
+            {...props}
+        />
+    </DialogPrimitive.Overlay>
 ))
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
 const DialogContent = React.forwardRef<
     React.ElementRef<typeof DialogPrimitive.Content>,
     React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-    <DialogPortal>
-        <DialogOverlay />
-        <DialogPrimitive.Content
-            ref={ref}
-            className={cn(
-                "fixed left-[50%] top-[50%] z-50 grid w-full max-w-xl translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 sm:rounded-3xl",
-                "bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl", // Unicorn Premium Glass
-                className
-            )}
-            {...props}
-        >
-            {children}
-            <DialogPrimitive.Close className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-                <X className="h-4 w-4" />
-                <span className="sr-only">Close</span>
-            </DialogPrimitive.Close>
-        </DialogPrimitive.Content>
-    </DialogPortal>
-))
+>(({ className, children, ...props }, ref) => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+
+    return (
+        <DialogPortal forceMount>
+            <DialogOverlay />
+            <DialogPrimitive.Content
+                asChild
+                ref={ref}
+                {...props}
+            >
+                <motion.div
+                    initial={isMobile ? { y: "100%", opacity: 1 } : { scale: 0.95, opacity: 0, y: "-50%", x: "-50%" }}
+                    animate={isMobile ? { y: 0, opacity: 1 } : { scale: 1, opacity: 1, y: "-50%", x: "-50%" }}
+                    exit={isMobile ? { y: "100%", opacity: 1 } : { scale: 0.95, opacity: 0, y: "-50%", x: "-50%" }}
+                    transition={{
+                        type: "spring",
+                        damping: 25,
+                        stiffness: 300
+                    }}
+                    className={cn(
+                        "fixed z-50 grid w-full gap-4 border p-6 shadow-lg duration-200 sm:rounded-3xl",
+                        "bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl",
+                        // Mobile: Bottom Sheet, Desktop: Center Modal
+                        "bottom-0 left-0 right-0 sm:bottom-auto sm:left-[50%] sm:top-[50%] sm:max-w-xl",
+                        className
+                    )}
+                >
+                    {children}
+                    <DialogPrimitive.Close asChild>
+                        <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            className="absolute right-4 top-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100/50 opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground dark:bg-slate-800/50"
+                        >
+                            <X className="h-5 w-5" />
+                            <span className="sr-only">Close</span>
+                        </motion.button>
+                    </DialogPrimitive.Close>
+                </motion.div>
+            </DialogPrimitive.Content>
+        </DialogPortal>
+    )
+})
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
 const DialogHeader = ({

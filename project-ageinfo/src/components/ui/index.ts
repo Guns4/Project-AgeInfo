@@ -13,5 +13,11 @@ export * from './select';
 export * from './dialog';
 export * from './progress';
 export * from './slider';
+export * from './card-premium';
+export * from './typography';
+export * from './tooltip';
+export * from './label';
+export * from './form';
+
 
 

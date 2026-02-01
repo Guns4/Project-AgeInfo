@@ -7,6 +7,13 @@ export const routing = defineRouting({
 
     // Used when no locale matches
     defaultLocale: 'en',
+
+    // Use 'always' for consistent SEO-friendly URLs
+    // This ensures /en and /id prefixes are always visible
+    localePrefix: 'always',
+
+    // Locale detection configuration
+    localeDetection: true,
 });
 
 // Lightweight wrappers around Next.js' navigation APIs
