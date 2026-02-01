@@ -252,6 +252,41 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* Custom Scrollbar (Premium Thin) */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--indigo-500) / 0.5);
+    /* Primary-500 with transparency */
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--indigo-600) / 0.8);
+  }
+
+  /* Custom Selection (Brand Identity) */
+  ::selection {
+    background: hsl(var(--indigo-500) / 0.25);
+    /* Primary-100 equivalent visual */
+    color: hsl(var(--indigo-900));
+  }
+
+  /* Dark mode specific for selection visibility */
+  @media (prefers-color-scheme: dark) {
+    ::selection {
+      background: hsl(var(--indigo-400) / 0.3);
+      color: hsl(var(--indigo-50));
+    }
+  }
 }
 
 @layer utilities {
